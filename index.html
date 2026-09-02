@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar container" aria-label="Main navigation">
+            <button class="theme-toggle" type="button" aria-label="Toggle dark mode">Dark</button>
+
+            <a href="#home" class="brand">Jan Romeo Cruz</a>
+
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero container section" id="home">
+            <div class="hero-copy reveal">
+                <p class="eyebrow">Creative developer</p>
+                <h1>Hi, I’m Jan — a designer and builder of thoughtful digital experiences.</h1>
+                <p class="intro">
+                    I enjoy turning ideas into clean, functional interfaces and bringing personality
+                    into every project. I’m passionate about art, technology, and creating work that
+                    feels both useful and memorable.
+                </p>
+                <div class="hero-meta">
+                    <span>Based in the Philippines</span>
+                    <span>Available for freelance work</span>
+                </div>
+            </div>
+
+            <div class="hero-visual reveal" aria-label="Placeholder profile illustration"></div>
+        </section>
+
+        <section class="section alt-section" id="about">
+            <div class="container section-content reveal">
+                <p class="section-tag">About</p>
+                <h2>Driven by curiosity and clean design.</h2>
+                <p>
+                    I’m a multidisciplinary creative who enjoys solving problems through visual design,
+                    user experience, and thoughtful development. I like building experiences that feel
+                    effortless, expressive, and real.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="projects">
+            <div class="container section-content reveal">
+                <p class="section-tag">Projects</p>
+                <h2>Selected work and ideas.</h2>
+                <p>
+                    My work focuses on personal branding, web experiences, and digital concepts that
+                    combine aesthetics with practical usability. Each project is designed to feel
+                    intentional and memorable.
+                </p>
+            </div>
+        </section>
+
+        <section class="section alt-section" id="contact">
+            <div class="container section-content reveal">
+                <p class="section-tag">Contact</p>
+                <h2>Let’s build something meaningful.</h2>
+                <p>
+                    If you’re looking for a creative partner or want to collaborate on a project,
+                    feel free to reach out and say hello.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const body = document.body;
+        const toggleButton = document.querySelector('.theme-toggle');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        const revealElements = document.querySelectorAll('.reveal');
+
+        toggleButton.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            toggleButton.textContent = isDark ? 'Light' : 'Dark';
+            toggleButton.setAttribute('aria-label', isDark ? 'Toggle light mode' : 'Toggle dark mode');
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                } else {
+                    entry.target.classList.remove('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.2,
+            rootMargin: '0px 0px -10% 0px'
+        });
+
+        revealElements.forEach((element) => {
+            revealObserver.observe(element);
+        });
+
+        navLinks.forEach((link) => {
+            link.addEventListener('click', (event) => {
+                const targetId = link.getAttribute('href');
+                const target = document.querySelector(targetId);
+
+                if (!target) return;
+
+                event.preventDefault();
+
+                const headerOffset = document.querySelector('.site-header').offsetHeight;
+                const startY = window.pageYOffset;
+                const targetPosition = target.getBoundingClientRect().top + startY - headerOffset;
+                const distance = targetPosition - startY;
+                const duration = 1200;
+                let startTime = null;
+
+                function easeOutCubic(t) {
+                    return 1 - Math.pow(1 - t, 3);
+                }
+
+                function animateScroll(timestamp) {
+                    if (!startTime) startTime = timestamp;
+
+                    const progress = Math.min((timestamp - startTime) / duration, 1);
+                    const eased = easeOutCubic(progress);
+
+                    window.scrollTo(0, startY + distance * eased);
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animateScroll);
+                    }
+                }
+
+                requestAnimationFrame(animateScroll);
+            });
+        });
+    </script>
+</body>
+</html>
